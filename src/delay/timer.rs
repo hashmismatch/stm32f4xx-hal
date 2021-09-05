@@ -65,7 +65,7 @@ macro_rules! hal {
                     // For example, if the clock is set to 48 MHz, with a prescaler of 48
                     // we'll get ticks that are 1 µs long. This means that we can write the
                     // delay value directly to the auto-reload register (ARR).
-                    let psc = u16(self.clk.0 / 1_000_000)
+                    let psc = u16(self.clk.integer() / 1_000_000)
                         .expect("Prescaler does not fit in u16");
                     let arr = us;
                     $waitfn(&mut self.tim, psc, arr);
@@ -76,7 +76,7 @@ macro_rules! hal {
                 /// Sleep for up to 2^16-1 microseconds (~65 milliseconds).
                 fn delay_us(&mut self, us: u16) {
                     // See DelayUs<u32> for explanations.
-                    let psc = u16(self.clk.0 / 1_000_000)
+                    let psc = u16(self.clk.integer() / 1_000_000)
                         .expect("Prescaler does not fit in u16");
                     let arr = u32(us);
                     $waitfn(&mut self.tim, psc, arr);
@@ -102,7 +102,7 @@ macro_rules! hal {
                     //
                     // Unfortunately this means that only one half of the full 32-bit range
                     // can be used, but 24 days should be plenty of usable delay time.
-                    let psc = u16(self.clk.0 / 1000 / 2)
+                    let psc = u16(self.clk.integer() / 1000 / 2)
                         .expect("Prescaler does not fit in u16");
 
                     // Since PSC = 0.5 ms, double the value for the ARR
@@ -117,7 +117,7 @@ macro_rules! hal {
                 fn delay_ms(&mut self, ms: u16) {
                     // See DelayMs<u32> for explanations. Since the value range is only 16 bit,
                     // we don't need an assert here.
-                    let psc = u16(self.clk.0 / 1000 / 2)
+                    let psc = u16(self.clk.integer() / 1000 / 2)
                         .expect("Prescaler does not fit in u16");
                     let arr = u32(ms) << 1;
                     $waitfn(&mut self.tim, psc, arr);

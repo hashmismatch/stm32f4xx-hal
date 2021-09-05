@@ -64,7 +64,7 @@ mod pll;
 mod enable;
 use crate::pac::rcc::RegisterBlock as RccRB;
 
-pub(crate) const MAX_HERTZ: Hertz = Hertz(u32::MAX);
+pub(crate) const MAX_HERTZ: Hertz = Hertz::new(u32::MAX);
 
 /// Bus associated to peripheral
 pub trait RccBus: crate::Sealed {
@@ -246,7 +246,7 @@ impl GetBusFreq for APB1 {
     }
     fn get_timer_frequency(clocks: &Clocks) -> Hertz {
         let pclk_mul = if clocks.ppre1 == 1 { 1 } else { 2 };
-        Hertz(clocks.pclk1.0 * pclk_mul)
+        Hertz::new(clocks.pclk1.integer() * pclk_mul)
     }
 }
 
@@ -256,7 +256,7 @@ impl GetBusFreq for APB2 {
     }
     fn get_timer_frequency(clocks: &Clocks) -> Hertz {
         let pclk_mul = if clocks.ppre2 == 1 { 1 } else { 2 };
-        Hertz(clocks.pclk2.0 * pclk_mul)
+        Hertz::new(clocks.pclk2.integer() * pclk_mul)
     }
 }
 
@@ -497,7 +497,7 @@ impl CFGR {
     where
         F: TryInto<Hertz>,
     {
-        self.hse = Some(freq.try_into().unwrap_or(MAX_HERTZ).0);
+        self.hse = Some(freq.try_into().unwrap_or(MAX_HERTZ).integer());
         self
     }
 
@@ -519,7 +519,7 @@ impl CFGR {
     where
         F: TryInto<Hertz>,
     {
-        self.hclk = Some(freq.try_into().unwrap_or(MAX_HERTZ).0);
+        self.hclk = Some(freq.try_into().unwrap_or(MAX_HERTZ).integer());
         self
     }
 
@@ -527,7 +527,7 @@ impl CFGR {
     where
         F: TryInto<Hertz>,
     {
-        self.pclk1 = Some(freq.try_into().unwrap_or(MAX_HERTZ).0);
+        self.pclk1 = Some(freq.try_into().unwrap_or(MAX_HERTZ).integer());
         self
     }
 
@@ -535,7 +535,7 @@ impl CFGR {
     where
         F: TryInto<Hertz>,
     {
-        self.pclk2 = Some(freq.try_into().unwrap_or(MAX_HERTZ).0);
+        self.pclk2 = Some(freq.try_into().unwrap_or(MAX_HERTZ).integer());
         self
     }
 
@@ -543,7 +543,7 @@ impl CFGR {
     where
         F: TryInto<Hertz>,
     {
-        self.sysclk = Some(freq.try_into().unwrap_or(MAX_HERTZ).0);
+        self.sysclk = Some(freq.try_into().unwrap_or(MAX_HERTZ).integer());
         self
     }
 
@@ -560,7 +560,7 @@ impl CFGR {
     where
         F: TryInto<Hertz>,
     {
-        self.i2s_ckin = Some(freq.try_into().unwrap_or(MAX_HERTZ).0);
+        self.i2s_ckin = Some(freq.try_into().unwrap_or(MAX_HERTZ).integer());
         self
     }
 
@@ -584,7 +584,7 @@ impl CFGR {
     where
         F: TryInto<Hertz>,
     {
-        self.i2s_clk = Some(freq.try_into().unwrap_or(MAX_HERTZ).0);
+        self.i2s_clk = Some(freq.try_into().unwrap_or(MAX_HERTZ).integer());
         self
     }
 
@@ -599,7 +599,7 @@ impl CFGR {
     where
         F: TryInto<Hertz>,
     {
-        self.i2s_apb1_clk = Some(freq.try_into().unwrap_or(MAX_HERTZ).0);
+        self.i2s_apb1_clk = Some(freq.try_into().unwrap_or(MAX_HERTZ).integer());
         self
     }
 
@@ -1161,13 +1161,13 @@ impl CFGR {
         });
 
         let clocks = Clocks {
-            hclk: Hertz(hclk),
-            pclk1: Hertz(pclk1),
-            pclk2: Hertz(pclk2),
+            hclk: Hertz::new(hclk),
+            pclk1: Hertz::new(pclk1),
+            pclk2: Hertz::new(pclk2),
             ppre1,
             ppre2,
-            sysclk: Hertz(sysclk),
-            pll48clk: plls.pll48clk.map(Hertz),
+            sysclk: Hertz::new(sysclk),
+            pll48clk: plls.pll48clk.map(Hertz::new),
 
             #[cfg(not(any(
                 feature = "stm32f412",
@@ -1175,21 +1175,21 @@ impl CFGR {
                 feature = "stm32f423",
                 feature = "stm32f446",
             )))]
-            i2s_clk: plls.i2s.i2s_clk.map(Hertz),
+            i2s_clk: plls.i2s.i2s_clk.map(Hertz::new),
             #[cfg(any(
                 feature = "stm32f412",
                 feature = "stm32f413",
                 feature = "stm32f423",
                 feature = "stm32f446",
             ))]
-            i2s_apb1_clk: plls.i2s.i2s_apb1_clk.map(Hertz),
+            i2s_apb1_clk: plls.i2s.i2s_apb1_clk.map(Hertz::new),
             #[cfg(any(
                 feature = "stm32f412",
                 feature = "stm32f413",
                 feature = "stm32f423",
                 feature = "stm32f446",
             ))]
-            i2s_apb2_clk: plls.i2s.i2s_apb2_clk.map(Hertz),
+            i2s_apb2_clk: plls.i2s.i2s_apb2_clk.map(Hertz::new),
 
             #[cfg(any(
                 feature = "stm32f413",
@@ -1201,7 +1201,7 @@ impl CFGR {
                 feature = "stm32f469",
                 feature = "stm32f479",
             ))]
-            saia_clk: plls.sai.sai1_clk.map(Hertz),
+            saia_clk: plls.sai.sai1_clk.map(Hertz::new),
             #[cfg(any(
                 feature = "stm32f413",
                 feature = "stm32f423",
@@ -1212,11 +1212,11 @@ impl CFGR {
                 feature = "stm32f469",
                 feature = "stm32f479",
             ))]
-            saib_clk: plls.sai.sai2_clk.map(Hertz),
+            saib_clk: plls.sai.sai2_clk.map(Hertz::new),
             #[cfg(feature = "stm32f446")]
-            sai1_clk: plls.sai.sai1_clk.map(Hertz),
+            sai1_clk: plls.sai.sai1_clk.map(Hertz::new),
             #[cfg(feature = "stm32f446")]
-            sai2_clk: plls.sai.sai2_clk.map(Hertz),
+            sai2_clk: plls.sai.sai2_clk.map(Hertz::new),
         };
 
         if self.pll48clk {
@@ -1605,7 +1605,7 @@ impl Clocks {
     pub fn is_pll48clk_valid(&self) -> bool {
         // USB specification allows +-0.25%
         self.pll48clk
-            .map(|freq| (48_000_000 - freq.0 as i32).abs() <= 120_000)
+            .map(|freq| (48_000_000 - freq.integer() as i32).abs() <= 120_000)
             .unwrap_or(false)
     }
 

@@ -222,7 +222,7 @@ macro_rules! pwm_all_channels {
                     // might as well enable for the auto-reload too
                     self.tim.cr1.modify(|_, w| w.arpe().set_bit());
 
-                    let ticks = self.clk.0 / freq.try_into().unwrap_or(MAX_HERTZ).0;
+                    let ticks = self.clk.integer() / freq.try_into().unwrap_or(MAX_HERTZ).integer();
                     let psc = u16((ticks - 1) / (1 << 16)).unwrap();
                     self.tim.psc.write(|w| w.psc().bits(psc) );
                     let arr = u16(ticks / u32(psc + 1)).unwrap();
@@ -285,7 +285,7 @@ macro_rules! pwm_2_channels {
                     // might as well enable for the auto-reload too
                     self.tim.cr1.modify(|_, w| w.arpe().set_bit());
 
-                    let ticks = self.clk.0 / freq.try_into().unwrap_or(MAX_HERTZ).0;
+                    let ticks = self.clk.integer() / freq.try_into().unwrap_or(MAX_HERTZ).integer();
                     let psc = u16((ticks - 1) / (1 << 16)).unwrap();
                     self.tim.psc.write(|w| w.psc().bits(psc) );
                     let arr = u16(ticks / u32(psc + 1)).unwrap();
@@ -335,7 +335,7 @@ macro_rules! pwm_1_channel {
                     // might as well enable for the auto-reload too
                     self.tim.cr1.modify(|_, w| w.arpe().set_bit());
 
-                    let ticks = self.clk.0 / freq.try_into().unwrap_or(MAX_HERTZ).0;
+                    let ticks = self.clk.integer() / freq.try_into().unwrap_or(MAX_HERTZ).integer();
                     let psc = u16((ticks - 1) / (1 << 16)).unwrap();
                     self.tim.psc.write(|w| w.psc().bits(psc) );
                     let arr = u16(ticks / u32(psc + 1)).unwrap();

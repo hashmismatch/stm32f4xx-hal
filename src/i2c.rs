@@ -65,7 +65,7 @@ where
 {
     fn from(frequency: F) -> Self {
         let frequency: Hertz = frequency.try_into().unwrap_or(MAX_HERTZ);
-        if frequency <= 100_000.Hz() {
+        if frequency.integer() <= 100_000 {
             Self::Standard { frequency }
         } else {
             Self::Fast {
@@ -323,7 +323,7 @@ where
         self.i2c.cr1.modify(|_, w| w.pe().clear_bit());
 
         // Calculate settings for I2C speed modes
-        let clock = pclk.0;
+        let clock = pclk.integer();
         let clc_mhz = clock / 1_000_000;
         assert!((2..=50).contains(&clc_mhz));
 
@@ -343,7 +343,7 @@ where
         match mode {
             // I2C clock control calculation
             Mode::Standard { frequency } => {
-                let ccr = (clock / (frequency.0 * 2)).max(4);
+                let ccr = (clock / (frequency.integer() * 2)).max(4);
 
                 // Set clock to standard mode with appropriate parameters for selected speed
                 self.i2c.ccr.write(|w| unsafe {
@@ -360,7 +360,7 @@ where
                 duty_cycle,
             } => match duty_cycle {
                 DutyCycle::Ratio2to1 => {
-                    let ccr = (clock / (frequency.0 * 3)).max(1);
+                    let ccr = (clock / (frequency.integer() * 3)).max(1);
 
                     // Set clock to fast mode with appropriate parameters for selected speed (2:1 duty cycle)
                     self.i2c.ccr.write(|w| unsafe {
@@ -368,7 +368,7 @@ where
                     });
                 }
                 DutyCycle::Ratio16to9 => {
-                    let ccr = (clock / (frequency.0 * 25)).max(1);
+                    let ccr = (clock / (frequency.integer() * 25)).max(1);
 
                     // Set clock to fast mode with appropriate parameters for selected speed (16:9 duty cycle)
                     self.i2c.ccr.write(|w| unsafe {

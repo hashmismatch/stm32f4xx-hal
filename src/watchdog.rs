@@ -3,8 +3,8 @@
 use crate::{
     hal::watchdog::{Watchdog, WatchdogEnable},
     pac::{DBGMCU, IWDG},
-    time::duration::Milliseconds,
 };
+use embedded_time::duration::Milliseconds;
 
 /// Wraps the Independent Watchdog (IWDG) peripheral
 pub struct IndependentWatchdog {

@@ -88,7 +88,7 @@ pub enum Event {
 }
 
 pub mod config {
-    use crate::time::rate::{BitsPerSecond, Extensions};
+    use embedded_time::rate::{BitsPerSecond, Extensions};
 
     pub enum WordLength {
         DataBits8,
@@ -694,7 +694,7 @@ where
             USART::reset(rcc);
         }
 
-        let pclk_freq = USART::get_frequency(&clocks).0;
+        let pclk_freq = USART::get_frequency(&clocks).integer();
         let baud = config.baudrate.0;
 
         // The frequency to calculate USARTDIV is this:

@@ -71,7 +71,7 @@ macro_rules! hal {
                 Sets the TIMer's prescaler such that the TIMer that it ticks at about the best-guess
                  frequency.
                 */
-                let ticks = self.clk.0 / best_guess.try_into().unwrap_or(MAX_HERTZ).0;
+                let ticks = self.clk.integer() / best_guess.try_into().unwrap_or(MAX_HERTZ).integer();
                 let psc = u16((ticks - 1) / (1 << 16)).unwrap();
                 self.tim.psc.write(|w| w.psc().bits(psc));
 

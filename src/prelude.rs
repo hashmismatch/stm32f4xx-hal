@@ -67,4 +67,4 @@ pub use crate::rcc::RccExt as _stm32f4xx_hal_rcc_RccExt;
 #[cfg(all(feature = "device-selected", feature = "rng"))]
 pub use crate::rng::RngExt as _stm32f4xx_hal_rng_RngExt;
 pub use crate::syscfg::SysCfgExt as _stm32f4xx_hal_syscfg_SysCfgExt;
-pub use embedded_time::rate::Extensions as _embedded_time_rate_Extensions;
+pub use crate::time::rate::Extensions as _embedded_time_rate_Extensions;

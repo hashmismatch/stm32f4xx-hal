@@ -94,7 +94,7 @@ impl CountDown for CountDownTimer<SYST> {
     where
         T: Into<Hertz>,
     {
-        let rvr = self.clk.0 / timeout.into().0 - 1;
+        let rvr = self.clk.integer() / timeout.into().integer() - 1;
 
         assert!(rvr < (1 << 24));
 
@@ -261,8 +261,8 @@ macro_rules! hal {
                     // reset counter
                     self.tim.cnt.reset();
 
-                    let frequency = timeout.into().0;
-                    let ticks = self.clk.0 / frequency;
+                    let frequency = timeout.into().integer();
+                    let ticks = self.clk.integer() / frequency;
 
                     let psc = u16((ticks - 1) / (1 << 16)).unwrap();
                     self.tim.psc.write(|w| w.psc().bits(psc) );

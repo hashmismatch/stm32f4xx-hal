@@ -623,7 +623,7 @@ where
         // disable SS output
         self.spi.cr2.write(|w| w.ssoe().clear_bit());
 
-        let br = match clock.0 / freq.0 {
+        let br = match clock.integer() / freq.integer() {
             0 => unreachable!(),
             1..=2 => 0b000,
             3..=5 => 0b001,

@@ -26,7 +26,8 @@ compile_error!(
 #[cfg(feature = "device-selected")]
 pub use embedded_hal as hal;
 #[cfg(feature = "device-selected")]
-pub use embedded_time as time;
+pub mod time;
+//pub use embedded_time as time;
 
 #[cfg(feature = "device-selected")]
 pub use nb;
