@@ -1,10 +1,19 @@
 #![no_std]
 #![no_main]
 
-use panic_semihosting as _;
+//use panic_semihosting as _;
+use panic_halt as _;
 
 #[rtic::app(device = stm32f4xx_hal::pac, dispatchers = [EXTI0])]
 mod app {
+    macro_rules! force_eval {
+        ($e:expr) => {
+            unsafe {
+                ::core::ptr::read_volatile(&$e);
+            }
+        };
+    }
+
     use cortex_m_semihosting::hprintln;
     use dwt_systick_monotonic::DwtSystick;
     use rtic::time::duration::Seconds;
@@ -116,7 +125,8 @@ mod app {
 
         let temperature = (110.0 - 30.0) * ((raw_temp as f32) - cal30) / (cal110 - cal30) + 30.0;
         let voltage = (raw_volt as f32) / ((2_i32.pow(12) - 1) as f32) * 3.3;
-
-        hprintln!("temperature: {}, voltage: {}", temperature, voltage).unwrap();
+force_eval!(temperature);
+force_eval!(voltage);
+        //hprintln!("temperature: {}, voltage: {}", temperature, voltage).unwrap();
     }
 }
