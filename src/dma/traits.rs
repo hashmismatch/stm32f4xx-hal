@@ -739,9 +739,9 @@ dma_map!(
     (Stream7<DMA2>, 7, CCR4<pac::TIM8>, PeripheralToMemory), //TIM8_CH4
     (Stream7<DMA2>, 7, DMAR<pac::TIM8>, MemoryToPeripheral), //TIM8_COM/TRIG
     (Stream7<DMA2>, 7, DMAR<pac::TIM8>, PeripheralToMemory), //TIM8_COM/TRIG
-    (Stream1<DMA1>, 4, pac::USART3, PeripheralToMemory),     //USART3_RX
-    (Stream3<DMA1>, 4, pac::USART3, MemoryToPeripheral),     //USART3_TX
-    (Stream4<DMA1>, 7, pac::USART3, MemoryToPeripheral),     //USART3_TX:DMA_CHANNEL_7
+    (Stream1<DMA1>, 4, Rx<pac::USART3>, PeripheralToMemory),     //USART3_RX
+    (Stream3<DMA1>, 4, Tx<pac::USART3>, MemoryToPeripheral),     //USART3_TX
+    (Stream4<DMA1>, 7, Tx<pac::USART3>, MemoryToPeripheral),     //USART3_TX:DMA_CHANNEL_7
 );
 
 #[cfg(any(
